@@ -107,7 +107,7 @@ RUN cd /tmp \
 	&& tar xfz phpMyAdmin* \
 	&& rm phpMyAdmin*.tar.gz \
 	&& mv phpMyAdmin* /var/www/_tools/pma
-ADD ../common/config.inc.php /var/www/_tools/pma/
+ADD ./common/config.inc.php /var/www/_tools/pma/
 
 # =========================================
 # Reload Apache2
