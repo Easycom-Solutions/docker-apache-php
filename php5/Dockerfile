@@ -56,7 +56,7 @@ RUN mkdir -p /var/www/logs /var/www/_tools /var/www/htdocs
 RUN DEBIAN_FRONTEND=noninteractive a2enmod actions rewrite deflate headers 
 
 # Configure apache to be in production mode for better security
-ADD ../common/security.conf /etc/apache2/conf-available/security.conf
+ADD ./common/security.conf /etc/apache2/conf-available/security.conf
 RUN a2enconf security
 
 # Configure servername to avoid alert in console
@@ -64,7 +64,7 @@ RUN echo "ServerName $(cat /etc/hostname)" > /etc/apache2/conf-available/servern
 RUN a2enconf servername
 
 # Copy configuration file to secure /tools path by an htaccess // see entrypoint to configure login/pass
-ADD ../common/common_tools.conf /etc/apache2/conf-available/common_tools.conf
+ADD ./common/common_tools.conf /etc/apache2/conf-available/common_tools.conf
 RUN a2enconf common_tools
 
 # Remove default configuration for virtuals hosts
@@ -74,7 +74,7 @@ RUN mv _bak /etc/apache2/sites-available/
 RUN rm -Rf /etc/apache2/sites-enabled/*
 
 # Add our configuration for default virtual host
-ADD ../common/vhost-default.conf /etc/apache2/sites-available/default.conf
+ADD ./common/vhost-default.conf /etc/apache2/sites-available/default.conf
 RUN chmod 655 /etc/apache2/sites-available/default.conf
 RUN a2ensite default
 
