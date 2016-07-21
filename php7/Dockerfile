@@ -4,7 +4,6 @@ MAINTAINER Frédéric T <xmedias@easycom.digital>
 ENV TOOLS_HTPASSWD easycom:P@ssw0rd
 ENV OPCACHE_MAX_MEMORY "128"
 ENV OPCACHE_MAX_FILES "12000"
-ENV PHP_REDIS_VERSION 2.2.8
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends ca-certificates wget
 
@@ -16,6 +15,16 @@ RUN echo 'deb-src http://ftp.fr.debian.org/debian/ jessie main contrib non-free'
 RUN echo 'deb http://security.debian.org/ jessie/updates main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://security.debian.org/ jessie/updates main' >> /etc/apt/sources.list
 
+## ================================
+## Add dotdeb repository to sources to get last version of apache and php for jessie
+## ================================
+RUN echo 'deb http://packages.dotdeb.org jessie all' > /etc/apt/sources.list.d/dotdeb.list
+RUN echo 'deb-src http://packages.dotdeb.org jessie all' >> /etc/apt/sources.list.d/dotdeb.list
+
+RUN wget https://www.dotdeb.org/dotdeb.gpg
+RUN apt-key add dotdeb.gpg
+#RUN apt-get purge -y --auto-remove ca-certificates wget
+
 # =========================================
 # Update apt-cache and install Apache2
 # =========================================
@@ -24,15 +33,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y --no-install-rec
 	unzip \
 	apache2 \
 	libapache2-mod-fastcgi \
-	php5 \
-	php5-cli \
-	php5-fpm \
-	php5-curl \
-	php5-gd \
-	php5-imagick \
-	php5-mcrypt \
-	php5-dev \
-	php5-mysql
+	php7.0-fpm \
+	php7.0-json \
+	php7.0-dev \
+	php7.0-imagick \
+	php7.0-gd \
+	php7.0-mcrypt \
+	php7.0-curl \
+	php7.0-mysql \
+	php7.0-bz2 \
+	php7.0-redis
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -68,19 +78,12 @@ ADD ./common/vhost-default.conf /etc/apache2/sites-available/default.conf
 RUN chmod 655 /etc/apache2/sites-available/default.conf
 RUN a2ensite default
 
-# Copy "php5-fpm.conf" in Apache2 conf-available > Enable php5 for all sites
-ADD ./php5-fpm.conf /etc/apache2/conf-available/php5-fpm.conf
-ADD ./php5-fpm.pool /etc/php5/fpm/pool.d/www.conf
-RUN chmod 655 /etc/apache2/conf-available/php5-fpm.conf
-RUN a2enconf php5-fpm
+# Copy "php7-fpm.conf" in Apache2 conf-available > Enable php for all sites
+ADD ./php7-fpm.conf /etc/apache2/conf-available/php7-fpm.conf
+ADD ./php7-fpm.pool /etc/php/7.0/fpm/pool.d/www.conf
+RUN chmod 655 /etc/apache2/conf-available/php7-fpm.conf
+RUN a2enconf php7-fpm
 
-# Install php-redis extension
-RUN cd /tmp \
-	&& wget https://github.com/phpredis/phpredis/archive/${PHP_REDIS_VERSION}.zip -O phpredis.zip \
-	&& unzip -o /tmp/phpredis.zip && mv /tmp/phpredis-* /tmp/phpredis && cd /tmp/phpredis && phpize && ./configure && make && make install \
-	&& echo 'extension=redis.so' > /etc/php5/mods-available/redis.ini \
-	&& php5enmod redis \
-	&& rm -Rf /tmp/*
 
 # Install opcache monitoring interface
 RUN cd /tmp \
@@ -103,7 +106,7 @@ ADD ./common/config.inc.php /var/www/_tools/pma/
 # Reload Apache2
 # =========================================
 RUN mv /var/www/html/index.html /var/www/htdocs/ && rm -Rf /var/www/html \
- && service php5-fpm stop && service apache2 stop && service php5-fpm start && service apache2 start
+ && service php7.0-fpm stop && service apache2 stop && service php7.0-fpm start && service apache2 start
 
 ADD entry-point.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entry-point.sh

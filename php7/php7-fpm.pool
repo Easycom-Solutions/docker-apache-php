@@ -1,0 +1,50 @@
+; Start a new pool named 'www'.
+[www]
+
+; Per pool prefix
+; It only applies on the following directives:
+; - 'access.log'
+; - 'slowlog'
+; - 'listen' (unixsocket)
+; - 'chroot'
+; - 'chdir'
+; - 'php_values'
+; - 'php_admin_values'
+; When not set, the global prefix (or /usr) applies instead.
+; Note: This directive can also be relative to the global prefix.
+; Default Value: none
+prefix = /var/www
+
+; Unix user/group of processes
+user = www-data
+group = www-data
+
+; The address on which to accept FastCGI requests.
+listen = /run/php/php7.0-fpm.sock
+
+listen.owner = www-data
+listen.group = www-data
+listen.allowed_clients = 127.0.0.1
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+pm.status_path = /_fpm/status
+ping.path = /_fpm/ping
+access.log = logs/fpm.access.log
+access.format = "%R - %u %t \"%m %r%Q%q\" %s %f %{mili}d %{kilo}M %C%%"
+slowlog = logs/fpm.slow.log
+request_slowlog_timeout = 5
+;chroot = htdocs/
+;chdir = /
+ 
+;env[TMP] = /tmp
+;env[TMPDIR] = /tmp
+;env[TEMP] = /tmp
+
+php_flag[display_errors] = off
+php_admin_value[error_log] = logs/fpm.error.log
+php_admin_flag[log_errors] = on
+php_admin_value[memory_limit] = 512M
