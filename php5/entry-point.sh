@@ -66,7 +66,7 @@ if [[ ! -z $FPM_USERNAME && ! -z $FPM_UID ]]; then
 		fi
 
 		usermod -g $FPM_GID $FPM_USERNAME
-		adduser $FPM_USERNAME www-data
+		adduser www-data $FPM_GROUPNAME
 
 		# Edit FPM file access
 		if [[ -f /etc/php5/fpm/pool.d/www.conf ]]; then
