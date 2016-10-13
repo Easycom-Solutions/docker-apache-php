@@ -31,6 +31,7 @@ RUN apt-key add dotdeb.gpg
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y --no-install-recommends install \
 	build-essential \
 	unzip \
+	ssmtp \
 	apache2 \
 	libapache2-mod-fastcgi \
 	php7.0-fpm \
@@ -107,6 +108,13 @@ ADD ./common/config.inc.php /var/www/_tools/pma/
 # =========================================
 RUN mv /var/www/html/index.html /var/www/htdocs/ && rm -Rf /var/www/html \
  && service php7.0-fpm stop && service apache2 stop && service php7.0-fpm start && service apache2 start
+
+# =========================================
+# Configure sendmail
+# =========================================
+
+# It permits to send email with custom sender address
+RUN sed -i s,#FromLineOverride=YES,FromLineOverride=YES, /etc/ssmtp/ssmtp.conf
 
 ADD entry-point.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entry-point.sh
