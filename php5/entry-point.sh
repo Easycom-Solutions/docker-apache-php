@@ -31,6 +31,10 @@ if [[ ! -z $TOOLS_HTPASSWD ]]; then
     done
 fi
 
+if [[ ! -z $FPM_IDLE_TIMEOUT ]]; then
+	sed -i "s,FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -socket /var/run/php5-fpm.sock -pass-header Authorization,FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -socket /var/run/php5-fpm.sock -idle-timeout $FPM_IDLE_TIMEOUT -pass-header Authorization," /etc/apache2/conf-available/php5-fpm.conf
+fi
+
 # Check default fpm access
 if [[ ! -z $FPM_USERNAME && ! -z $FPM_UID ]]; then
 	if [[ -z $FPM_GROUPNAME ]]; then
