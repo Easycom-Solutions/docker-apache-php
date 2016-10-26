@@ -54,7 +54,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y --no-install-rec
 #-> Make the directory 'default' for the default vhost and tools directory to handle some tools
 
 RUN mkdir -p /var/www/logs /var/www/_tools /var/www/htdocs \
- && DEBIAN_FRONTEND=noninteractive a2enmod actions rewrite deflate headers 
+ && DEBIAN_FRONTEND=noninteractive a2enmod actions rewrite deflate headers
 
 # Configure apache to be in production mode for better security
 ADD ./common/security.conf /etc/apache2/conf-available/security.conf

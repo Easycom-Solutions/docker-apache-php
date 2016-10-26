@@ -53,8 +53,8 @@ RUN echo "ServerName $(cat /etc/hostname)" > /etc/apache2/conf-available/servern
  && a2enconf servername
 
 # Copy configuration file to secure /tools path by an htaccess // see entrypoint to configure login/pass
-ADD ./common/common_tools.conf /etc/apache2/conf-available/common_tools.conf \
- && a2enconf common_tools
+ADD ./common/common_tools.conf /etc/apache2/conf-available/common_tools.conf
+RUN a2enconf common_tools
 
 # Remove default configuration for virtuals hosts
 RUN mkdir _bak \
