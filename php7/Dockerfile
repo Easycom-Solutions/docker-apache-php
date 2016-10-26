@@ -45,6 +45,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y --no-install-rec
 	php7.0-mysql \
 	php7.0-bz2 \
 	php7.0-redis \
+	php7.0-mbstring \
+	php7.0-xml \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # =========================================
