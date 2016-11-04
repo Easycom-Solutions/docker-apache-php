@@ -6,7 +6,8 @@ ENV OPCACHE_MAX_MEMORY "128"
 ENV OPCACHE_MAX_FILES "12000"
 ENV PHP_REDIS_VERSION 2.2.8
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends ca-certificates wget
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends ca-certificates wget \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ## ================================
 ## Add non-free to source.list
@@ -111,8 +112,9 @@ RUN mv /var/www/html/index.html /var/www/htdocs/ && rm -Rf /var/www/html \
 # It permits to send email with custom sender address
 RUN sed -i s,#FromLineOverride=YES,FromLineOverride=YES, /etc/ssmtp/ssmtp.conf
 
-ADD entry-point.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entry-point.sh
+ADD docker-entrypoint.sh /usr/local/bin/
+ADD default-cmd.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/default-cmd.sh
 
 ## ================================
 ## LAUNCH PART
@@ -120,5 +122,7 @@ RUN chmod +x /usr/local/bin/entry-point.sh
 # Expose sockets
 EXPOSE 80 443
 
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 # Launch run script
-CMD ["entry-point.sh"]
+CMD ["default-cmd.sh"]

@@ -9,14 +9,14 @@ EOT
 fi
 
 # We remove existing configuration in opcache.ini
-grep -v "memory_consumption" /etc/php5/mods-available/opcache.ini > temp && mv temp /etc/php5/mods-available/opcache.ini
-grep -v "max_accelerated_files" /etc/php5/mods-available/opcache.ini > temp && mv temp /etc/php5/mods-available/opcache.ini
+grep -v "memory_consumption" /etc/php/7.0/mods-available/opcache.ini > temp && mv temp /etc/php/7.0/mods-available/opcache.ini
+grep -v "max_accelerated_files" /etc/php/7.0/mods-available/opcache.ini > temp && mv temp /etc/php/7.0/mods-available/opcache.ini
 
 # We configure opcache.ini with ENV values
-cp  /etc/php5/mods-available/opcache.ini /tmp/opcache.ini
+cp  /etc/php/7.0/mods-available/opcache.ini /tmp/opcache.ini
 echo "opcache.memory_consumption=${OPCACHE_MAX_MEMORY}" >> /tmp/opcache.ini
 echo "opcache.max_accelerated_files=${OPCACHE_MAX_FILES}" >> /tmp/opcache.ini
-mv /tmp/opcache.ini /etc/php5/mods-available/opcache.ini
+mv /tmp/opcache.ini /etc/php/7.0/mods-available/opcache.ini
 
 if [[ ! -z $TOOLS_HTPASSWD ]]; then
 	rm /var/www/_tools/.htpasswd
@@ -32,7 +32,7 @@ if [[ ! -z $TOOLS_HTPASSWD ]]; then
 fi
 
 if [[ ! -z $FPM_IDLE_TIMEOUT ]]; then
-	sed -i "s,FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -socket /var/run/php5-fpm.sock -pass-header Authorization,FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -socket /var/run/php5-fpm.sock -idle-timeout $FPM_IDLE_TIMEOUT -pass-header Authorization," /etc/apache2/conf-available/php5-fpm.conf
+	sed -i "s,FastCgiExternalServer /usr/lib/cgi-bin/php7.0-fcgi -socket /run/php/php7.0-fpm.sock -pass-header Authorization,FastCgiExternalServer /usr/lib/cgi-bin/php7.0-fcgi -socket /run/php/php7.0-fpm.sock -idle-timeout $FPM_IDLE_TIMEOUT -pass-header Authorization," /etc/apache2/conf-available/php5-fpm.conf
 fi
 
 # Check default fpm access
@@ -73,13 +73,13 @@ if [[ ! -z $FPM_USERNAME && ! -z $FPM_UID ]]; then
 		adduser www-data $FPM_GROUPNAME
 
 		# Edit FPM file access
-		if [[ -f /etc/php5/fpm/pool.d/www.conf ]]; then
-			sed -i -r "s,^user = .+,user = $FPM_USERNAME," /etc/php5/fpm/pool.d/www.conf
-			sed -i -r "s,^group = .+,group = $FPM_GROUPNAME," /etc/php5/fpm/pool.d/www.conf
+		if [[ -f /etc/php/7.0/fpm/pool.d/www.conf ]]; then
+			sed -i -r "s,^user = .+,user = $FPM_USERNAME," /etc/php/7.0/fpm/pool.d/www.conf
+			sed -i -r "s,^group = .+,group = $FPM_GROUPNAME," /etc/php/7.0/fpm/pool.d/www.conf
 		fi
 	fi
 fi
 
-service php5-fpm stop && service apache2 stop && service php5-fpm start && service apache2 start
+service php7.0-fpm stop && service apache2 stop && service php7.0-fpm start && service apache2 start
 
-exec /bin/bash -i
+exec "$@"
