@@ -32,7 +32,7 @@ if [[ ! -z $TOOLS_HTPASSWD ]]; then
 fi
 
 if [[ ! -z $FPM_IDLE_TIMEOUT ]]; then
-	sed -i "s,FastCgiExternalServer /usr/lib/cgi-bin/php7.0-fcgi -socket /run/php/php7.0-fpm.sock -pass-header Authorization,FastCgiExternalServer /usr/lib/cgi-bin/php7.0-fcgi -socket /run/php/php7.0-fpm.sock -idle-timeout $FPM_IDLE_TIMEOUT -pass-header Authorization," /etc/apache2/conf-available/php5-fpm.conf
+	sed -i "s,FastCgiExternalServer /usr/lib/cgi-bin/php7.0-fcgi -socket /run/php/php7.0-fpm.sock -pass-header Authorization,FastCgiExternalServer /usr/lib/cgi-bin/php7.0-fcgi -socket /run/php/php7.0-fpm.sock -idle-timeout $FPM_IDLE_TIMEOUT -pass-header Authorization," /etc/apache2/conf-available/php7.0-fpm.conf
 fi
 
 # Check default fpm access
