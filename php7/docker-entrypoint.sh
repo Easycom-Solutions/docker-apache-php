@@ -80,6 +80,11 @@ if [[ ! -z $FPM_USERNAME && ! -z $FPM_UID ]]; then
 	fi
 fi
 
+if [[ -f /etc/apache2/conf-available/pagespeed.conf ]]; then
+	a2enmod pagespeed
+	a2enconf pagespeed
+fi
+
 service php7.0-fpm stop && service apache2 stop && service php7.0-fpm start && service apache2 start
 
 exec "$@"
