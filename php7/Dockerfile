@@ -110,8 +110,8 @@ ADD ./common/config.inc.php /var/www/_tools/pma/
 # Install Apache Pagespeed module
 RUN cd /tmp \
   &&  wget https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb \
-  && dpkg -i mod-pagespeed-*.deb
-  && apt-get -f install
+  && dpkg -i mod-pagespeed-*.deb \
+  && apt-get -f install \
   && rm mod-pagespeed-*.deb
 
 # =========================================
