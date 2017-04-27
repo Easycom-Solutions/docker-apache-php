@@ -7,7 +7,12 @@ trap 'echo "Ctrl-\\ pressed, processes are stopping"; service apache2 stop; serv
 
 while :
 do
+    # Read wait for interactions for 300 seconds
     read -t 300
+
+    # In some case, read could never run so we need a sleep
+    # We do not use it instead of read because it blocks entire shell script, so the traps too.
+    sleep 1
 done
 
 exit 1
