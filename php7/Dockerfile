@@ -1,4 +1,4 @@
-FROM easycom/base
+FROM easycom/base:jessie
 MAINTAINER Frédéric T <xmedias@easycom.digital>
 
 ENV TOOLS_HTPASSWD easycom:P@ssw0rd
